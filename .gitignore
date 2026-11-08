@@ -5,12 +5,10 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 
-# Material da competicao Kaggle (licenca proibe redistribuicao)
+# Engine e exemplo de submissao da competicao: o README da engine proibe republicar
 ptcg_engine_playground/
 sample_submission/
-data/fonte/
 
-# Bancos gerados pelo pipeline (recriados ao rodar os notebooks)
-data/bronze/*.db
-data/silver/*.db
-data/gold/*.db
+# Banco gerado pelo pipeline (recriado ao rodar os notebooks)
+data/*.duckdb
+data/*.duckdb.wal
