@@ -157,6 +157,15 @@ def analisar_dano(dano) -> tuple:
     return int(encontrado.group(1)), MODIFICADORES_DANO[encontrado.group(2)]
 
 
+def tipar_texto(dados: pd.DataFrame) -> pd.DataFrame:
+    """Marca as colunas de texto como string.
+
+    Sem isso, uma coluna de texto toda nula seria gravada como número no banco.
+    """
+    colunas_texto = dados.select_dtypes(include="object").columns
+    return dados.astype({coluna: "string" for coluna in colunas_texto})
+
+
 def preparar_en(bronze_en: pd.DataFrame) -> pd.DataFrame:
     dados = padronizar_ausentes(bronze_en).rename(columns=COLUNAS_EN)
     dados["card_id"] = dados["card_id"].astype(int)
@@ -210,7 +219,7 @@ def construir_cartas(bronze_en: pd.DataFrame, bronze_jp: pd.DataFrame) -> pd.Dat
         "grupo_categoria", "especie", "expansao", "numero_colecao", "expansao_jp",
         "numero_colecao_jp", "texto_carta",
     ]
-    return cartas[ordem]
+    return tipar_texto(cartas[ordem])
 
 
 def construir_movimentos(bronze_en: pd.DataFrame) -> pd.DataFrame:
@@ -239,7 +248,7 @@ def construir_movimentos(bronze_en: pd.DataFrame) -> pd.DataFrame:
         "custo_original", "custo_total", "custo_incolor", "custo_colorido",
         "dano_original", "dano_base", "modificador_dano", "tem_efeito", "efeito",
     ]
-    return movimentos[ordem].reset_index(drop=True)
+    return tipar_texto(movimentos[ordem].reset_index(drop=True))
 
 
 def construir_deck(bronze_deck: pd.DataFrame, cartas: pd.DataFrame) -> pd.DataFrame:

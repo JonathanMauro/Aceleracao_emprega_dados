@@ -140,3 +140,10 @@ def test_qualidade_sem_violacoes_nos_dados_inventados(bronze_en, bronze_jp):
     qualidade = checar_qualidade(cartas, movimentos)
 
     assert qualidade["violacoes"].sum() == 0
+
+
+def test_coluna_de_texto_toda_nula_continua_texto(bronze_en, bronze_jp):
+    cartas = construir_cartas(bronze_en, bronze_jp)
+
+    assert cartas["resistencia"].isna().all()
+    assert cartas["resistencia"].dtype == "string"
