@@ -1,8 +1,8 @@
-"""Testes da camada bronze com arquivos inventados em pasta temporária."""
+"""Testes da camada bronze com arquivos inventados em pasta temporária e banco em memória."""
 import pandas as pd
 
-from pipeline.banco import ler_tabela, listar_tabelas, salvar_tabelas
 from pipeline.bronze import carregar_bronze, hash_arquivo, ler_csv_bruto
+from pipeline.db import conectar, ler_tabela, listar_tabelas, salvar_tabela
 
 
 def criar_csv(pasta, nome, conteudo):
@@ -30,18 +30,18 @@ def test_leitura_sem_cabecalho_usa_nomes_informados(tmp_path):
 
 def test_carga_gera_controle_com_linhas_e_hash(tmp_path):
     caminho = criar_csv(tmp_path, "cartas.csv", "Card ID,Card Name\n1,Pikachu\n2,Raichu\n")
-    tabelas = carregar_bronze({"bronze_cartas": {"caminho": caminho}})
+    tabelas = carregar_bronze({"cartas": {"caminho": caminho}})
 
-    controle = tabelas["bronze_controle_carga"].iloc[0]
-    assert controle["tabela"] == "bronze_cartas"
+    controle = tabelas["controle_carga"].iloc[0]
+    assert controle["tabela"] == "cartas"
     assert controle["linhas"] == 2
     assert controle["md5_arquivo"] == hash_arquivo(caminho)
 
 
-def test_gravacao_e_leitura_em_banco_temporario(tmp_path):
-    banco = tmp_path / "teste.db"
+def test_gravacao_e_leitura_em_banco_em_memoria():
+    conexao = conectar()
     original = pd.DataFrame({"Card ID": ["1", "2"], "HP": ["n/a", "60"]})
-    salvar_tabelas({"bronze_cartas": original}, banco)
+    salvar_tabela(conexao, "bronze", "cartas", original)
 
-    assert listar_tabelas(banco) == ["bronze_cartas"]
-    pd.testing.assert_frame_equal(ler_tabela("bronze_cartas", banco), original)
+    assert listar_tabelas(conexao, "bronze") == ["cartas"]
+    pd.testing.assert_frame_equal(ler_tabela(conexao, "bronze", "cartas"), original)

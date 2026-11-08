@@ -50,5 +50,5 @@ def carregar_bronze(fontes: dict[str, dict]) -> dict[str, pd.DataFrame]:
         dados = ler_csv_bruto(caminho, parametros.get("cabecalho", True), parametros.get("nomes"))
         tabelas[nome] = dados
         controle.append(registro_controle(nome, caminho, dados))
-    tabelas["bronze_controle_carga"] = pd.DataFrame(controle)
+    tabelas["controle_carga"] = pd.DataFrame(controle)
     return tabelas
