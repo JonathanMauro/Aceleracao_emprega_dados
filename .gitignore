@@ -1,0 +1,16 @@
+# Ambiente Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Material da competicao Kaggle (licenca proibe redistribuicao)
+ptcg_engine_playground/
+sample_submission/
+data/fonte/
+
+# Bancos gerados pelo pipeline (recriados ao rodar os notebooks)
+data/bronze/*.db
+data/silver/*.db
+data/gold/*.db
